@@ -8,7 +8,7 @@ cp -r www $OUT/assets/www
 aapt package -f -m -J $OUT/gen -M android/AndroidManifest.xml -S android/res -I $JAR
 javac -nowarn --release 8 -classpath $JAR -d $OUT/classes $(find $OUT/gen android/src -name '*.java')
 dalvik-exchange --dex --output=$OUT/classes.dex $OUT/classes
-aapt package -f -M android/AndroidManifest.xml -S android/res -A $OUT/assets -I $JAR -F $OUT/unsigned.apk
+aapt package -f -M android/AndroidManifest.xml -S android/res -A $OUT/assets -0 arsc -I $JAR -F $OUT/unsigned.apk
 (cd $OUT && aapt add unsigned.apk classes.dex >/dev/null)
 zipalign -f 4 $OUT/unsigned.apk $OUT/aligned.apk
 KS=${KEYSTORE:-android/release.keystore}
