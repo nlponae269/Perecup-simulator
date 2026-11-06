@@ -1,0 +1,17 @@
+name: Release APK
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish prebuilt APK
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          APK=$(ls releases/*.apk | sort -V | tail -1)
+          gh release create "$GITHUB_REF_NAME" "$APK" --title "Объявка $GITHUB_REF_NAME" --notes "APK для Android (установка из неизвестных источников). Версия веб-части: см. репозиторий." --repo "$GITHUB_REPOSITORY"
