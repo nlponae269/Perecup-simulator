@@ -2,6 +2,12 @@ name: Release APK
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Тег релиза (например v1.0)'
+        required: true
+        default: 'v1.0'
 permissions:
   contents: write
 jobs:
@@ -12,6 +18,7 @@ jobs:
       - name: Publish prebuilt APK
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
         run: |
           APK=$(ls releases/*.apk | sort -V | tail -1)
-          gh release create "$GITHUB_REF_NAME" "$APK" --title "Объявка $GITHUB_REF_NAME" --notes "APK для Android (установка из неизвестных источников). Версия веб-части: см. репозиторий." --repo "$GITHUB_REPOSITORY"
+          gh release create "$TAG" "$APK" --target "$GITHUB_SHA" --title "Объявка $TAG" --notes "APK для Android: скачайте файл, разрешите установку из неизвестных источников. Играть можно и в браузере (Vercel)." --repo "$GITHUB_REPOSITORY"
